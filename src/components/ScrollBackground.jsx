@@ -13,17 +13,9 @@ import frame5 from '../assets/frame5-final-trouser.png'
 /**
  * ScrollBackground
  * Manages all 5 cinematic background frames.
- * The parent section must be tall (e.g. h-[400vh]) so scroll has room.
- * Each frame's opacity is driven by the section's own scrollYProgress.
- *
- * Scroll ranges (0–1 within the section):
- *   Frame 1 — fully visible at 0, fades out by 0.28
- *   Frame 2 — fades in 0.18→0.28, holds to 0.48, fades out by 0.58
- *   Frame 3 — fades in 0.42→0.52, holds to 0.67, fades out by 0.76
- *   Frame 4 — fades in 0.64→0.72, holds to 0.84, fades out by 0.92
- *   Frame 5 — fades in 0.82→0.92, stays fully visible to 1.0
+ * Opacities are driven directly by exact ranges in BUG 3.
  */
-export default function ScrollBackground({ sectionRef }) {
+export default function ScrollBackground({ sectionRef, isMobile }) {
   const { scrollYProgress } = useScroll({
     target: sectionRef,
     offset: ['start start', 'end end'],
@@ -36,32 +28,49 @@ export default function ScrollBackground({ sectionRef }) {
     restDelta: 0.001,
   })
 
+  // Exact opacities driven by BUG 3
+  const op1 = useTransform(progress, [0, 0.25], [1, 0])
+  const op2 = useTransform(progress, [0.15, 0.3, 0.45], [0, 1, 0])
+  const op3 = useTransform(progress, [0.35, 0.5, 0.65], [0, 1, 0])
+  const op4 = useTransform(progress, [0.55, 0.7, 0.85], [0, 1, 0])
+  const op5 = useTransform(progress, [0.8, 1.0], [0, 1])
+
+  const opacity1 = isMobile ? undefined : op1
+  const opacity2 = isMobile ? undefined : op2
+  const opacity3 = isMobile ? undefined : op3
+  const opacity4 = isMobile ? undefined : op4
+  const opacity5 = isMobile ? undefined : op5
+
+  const style1 = isMobile ? { animation: 'frameCycle1 15s infinite' } : {}
+  const style2 = isMobile ? { animation: 'frameCycle2 15s infinite' } : {}
+  const style3 = isMobile ? { animation: 'frameCycle3 15s infinite' } : {}
+  const style4 = isMobile ? { animation: 'frameCycle4 15s infinite' } : {}
+  const style5 = isMobile ? { animation: 'frameCycle5 15s infinite' } : {}
+
   // Subtle parallax Y for Frame 1 threads drifting forward
   const f1Y = useTransform(progress, [0, 0.3], ['0%', '-6%'])
 
   // Subtle scale zoom for Frame 3 fabric unroll feel
-  const f3Scale = useTransform(progress, [0.42, 0.76], [1.04, 1.0])
+  const f3Scale = useTransform(progress, [0.35, 0.65], [1.04, 1.0])
 
   // Frame 5 upward float
-  const f5Y = useTransform(progress, [0.82, 1], ['4%', '0%'])
+  const f5Y = useTransform(progress, [0.8, 1], ['4%', '0%'])
 
-  // Stitch line sub-progress: map full scroll 0.64–0.92 → 0–1
-  const stitchProgress = useTransform(progress, [0.64, 0.92], [0, 1])
+  // Stitch line sub-progress: map full scroll 0.55–0.85 → 0–1
+  const stitchProgress = useTransform(progress, [0.55, 0.85], [0, 1])
 
   return (
-    <div className="absolute inset-0 overflow-hidden">
+    <div className="absolute inset-0 overflow-hidden z-1">
 
-      {/* ── FRAME 1 — Industrial Thread Spools ────────────────────────────
-          IMAGE SWAP: Replace background with photo of large charcoal thread spools
-          Recommended shot: Close-up of dark industrial thread spools with
-          parallel threads running toward camera, dramatic side lighting */}
+      {/* ── FRAME 1 ── */}
       <TextureFrame
         image={frame1}
         scrollProgress={progress}
-        inStart={0}   peakStart={0}   peakEnd={0.18}  outEnd={0.28}
+        opacity={opacity1}
+        style={style1}
         overlayOpacity={0.52}
         vignette
-        motionProps={{ y: f1Y }}
+        motionProps={isMobile ? {} : { y: f1Y }}
       >
         {/* Subtle animated horizontal thread lines overlay */}
         <div className="absolute inset-0 pointer-events-none overflow-hidden">
@@ -80,14 +89,12 @@ export default function ScrollBackground({ sectionRef }) {
         </div>
       </TextureFrame>
 
-      {/* ── FRAME 2 — Industrial Loom Machine ─────────────────────────────
-          IMAGE SWAP: Replace background with photo of wide industrial loom in motion
-          Recommended shot: Loom shuttle crossing horizontally, dark machinery,
-          charcoal fabric forming row by row, dramatic factory floor lighting */}
+      {/* ── FRAME 2 ── */}
       <TextureFrame
         image={frame2}
         scrollProgress={progress}
-        inStart={0.18} peakStart={0.28} peakEnd={0.48} outEnd={0.58}
+        opacity={opacity2}
+        style={style2}
         overlayOpacity={0.55}
         vignette
       >
@@ -103,47 +110,41 @@ export default function ScrollBackground({ sectionRef }) {
         </div>
       </TextureFrame>
 
-      {/* ── FRAME 3 — Fabric on Cutting Table ─────────────────────────────
-          IMAGE SWAP: Replace background with photo of dark grey fabric unrolling
-          Recommended shot: Wide angle of dark fabric laid flat on a long wooden
-          cutting table with dramatic directional lamp from left */}
+      {/* ── FRAME 3 ── */}
       <TextureFrame
         image={frame3}
         scrollProgress={progress}
-        inStart={0.42} peakStart={0.52} peakEnd={0.67} outEnd={0.76}
+        opacity={opacity3}
+        style={style3}
         overlayOpacity={0.50}
         vignette
-        motionProps={{ scale: f3Scale }}
+        motionProps={isMobile ? {} : { scale: f3Scale }}
       />
 
-      {/* ── FRAME 4 — Sewing Machine Needle ───────────────────────────────
-          IMAGE SWAP: Replace background with extreme close-up of needle stitching
-          Recommended shot: Macro of sewing machine foot pressing dark fabric,
-          needle mid-stitch, thread clearly visible, edge blur, sharp center */}
+      {/* ── FRAME 4 ── */}
       <TextureFrame
         image={frame4}
         scrollProgress={progress}
-        inStart={0.60} peakStart={0.72} peakEnd={0.84} outEnd={0.92}
+        opacity={opacity4}
+        style={style4}
         overlayOpacity={0.60}
         vignette
       >
-        {/* SVG stitch line draws across center as you scroll through this frame */}
-        <StitchLineSVG scrollProgress={stitchProgress} />
+        {/* SVG stitch line draws across center as you scroll through this frame (hidden on mobile) */}
+        {!isMobile && <StitchLineSVG scrollProgress={stitchProgress} />}
       </TextureFrame>
 
-      {/* ── FRAME 5 — Final Pressed Trouser ───────────────────────────────
-          IMAGE SWAP: Replace background with photo of finished formal trouser hanging
-          Recommended shot: Single pressed men's formal trouser on black hanger,
-          near-black background, single dramatic top-left light source */}
+      {/* ── FRAME 5 ── */}
       <TextureFrame
         image={frame5}
         scrollProgress={progress}
-        inStart={0.82} peakStart={0.92} peakEnd={1.0} outEnd={null}
+        opacity={opacity5}
+        style={style5}
         overlayOpacity={0.45}
         vignette
-        motionProps={{ y: f5Y }}
+        motionProps={isMobile ? {} : { y: f5Y }}
       >
-        {/* CSS shimmer overlay for "fabric texture shimmers" payoff moment */}
+        {/* CSS shimmer overlay */}
         <div
           className="absolute inset-0 pointer-events-none"
           style={{
@@ -170,6 +171,33 @@ export default function ScrollBackground({ sectionRef }) {
         @keyframes shimmerSweep {
           0%   { background-position: -200% center; }
           100% { background-position: 200% center; }
+        }
+
+        /* Mobile CSS Automatic Frame Cycling (15s Loop) */
+        @keyframes frameCycle1 {
+          0%, 15% { opacity: 1; }
+          20%, 95% { opacity: 0; }
+          100% { opacity: 1; }
+        }
+        @keyframes frameCycle2 {
+          0%, 15% { opacity: 0; }
+          20%, 35% { opacity: 1; }
+          40%, 100% { opacity: 0; }
+        }
+        @keyframes frameCycle3 {
+          0%, 35% { opacity: 0; }
+          40%, 55% { opacity: 1; }
+          60%, 100% { opacity: 0; }
+        }
+        @keyframes frameCycle4 {
+          0%, 55% { opacity: 0; }
+          60%, 75% { opacity: 1; }
+          80%, 100% { opacity: 0; }
+        }
+        @keyframes frameCycle5 {
+          0%, 75% { opacity: 0; }
+          80%, 95% { opacity: 1; }
+          100% { opacity: 0; }
         }
       `}</style>
 

@@ -1,35 +1,33 @@
-import { useRef } from 'react'
+import { useRef, useState, useEffect } from 'react'
 import { useScroll, useSpring } from 'framer-motion'
 import ScrollBackground from './ScrollBackground'
 import HeroOverlay from './HeroOverlay'
 
 /**
  * Hero — Cinematic Scroll Documentary Section
- *
- * Structure:
- *   ┌─ <section> h-[400vh]  (tall, gives scroll room) ──────────────────┐
- *   │  ┌─ sticky h-screen ────────────────────────────────────────────┐  │
- *   │  │  <ScrollBackground />  ← 5 cross-dissolving photo frames    │  │
- *   │  │  <HeroOverlay />       ← text floating above frames         │  │
- *   │  └──────────────────────────────────────────────────────────────┘  │
- *   └────────────────────────────────────────────────────────────────────┘
- *
- * The section ref is passed into both children so they share the same
- * useScroll context and stay perfectly in sync.
- *
- * Mobile: On screens < md, the section collapses to h-[250vh] to keep
- * the experience tight without requiring excessive scrolling on small devices.
+ * Handles 5-frame scroll sequence with exact z-index layering and mobile safety guards.
  */
 export default function Hero() {
-  const sectionRef = useRef(null)
+  const containerRef = useRef(null)
+  const [isMobile, setIsMobile] = useState(false)
 
-  // Shared scroll progress for this section (0 → 1)
+  // Detect mobile width on mount and resize
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768)
+    }
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
+
+  // Shared scroll progress targeting the outer wrapper with custom offset ranges
   const { scrollYProgress } = useScroll({
-    target: sectionRef,
+    target: containerRef,
     offset: ['start start', 'end end'],
   })
 
-  // Spring-smoothed for 60fps feel — passed down to both children
+  // Spring-smoothed scroll value for buttery-smooth animations
   const smoothProgress = useSpring(scrollYProgress, {
     stiffness: 60,
     damping: 20,
@@ -39,17 +37,28 @@ export default function Hero() {
   return (
     <section
       id="hero"
-      ref={sectionRef}
-      // 400vh on desktop → smooth 5-frame journey; 300vh on mobile
-      className="relative h-[300vh] md:h-[400vh]"
+      ref={containerRef}
+      // BUG 1 & BUG 7: min-height 500vh on desktop / 250vh on mobile, z-index: 0
+      className={`relative z-0 overflow-hidden ${isMobile ? 'min-h-[250vh]' : 'min-h-[500vh]'}`}
     >
-      {/* Sticky viewport container — everything inside stays on screen */}
+      {/* BUG 1: Inner container sticky to top, taking full viewport height */}
       <div className="sticky top-0 h-screen w-full overflow-hidden">
 
-        {/* Layer 1 — Cinematic background frames (bottom-most) */}
-        <ScrollBackground sectionRef={sectionRef} />
+        {/* Layer 1 — Background frames (Z-Index: 1 set inside TextureFrame) */}
+        <ScrollBackground sectionRef={containerRef} isMobile={isMobile} />
 
-        {/* Layer 2 — Text overlay (floats above frames, never scrolls away) */}
+        {/* BUG 6: Permanent dark overlay always active on top of background (Z-Index: 5) */}
+        <div 
+          style={{
+            position: 'absolute',
+            inset: 0,
+            background: 'rgba(0,0,0,0.52)',
+            zIndex: 5,
+            pointerEvents: 'none'
+          }} 
+        />
+
+        {/* Layer 2 — Interactive Text overlay (Z-Index: 10) */}
         <HeroOverlay scrollProgress={smoothProgress} />
 
       </div>

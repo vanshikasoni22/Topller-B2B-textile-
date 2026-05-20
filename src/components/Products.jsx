@@ -49,7 +49,7 @@ export default function Products() {
   ]
 
   return (
-    <section id="products" className="py-24 md:py-32 bg-dark-950 relative overflow-hidden">
+    <section id="products" className="py-24 md:py-32 bg-dark-950 relative">
       
       {/* Decorative catalogue grids */}
       <div className="absolute left-0 top-1/4 w-[1px] h-96 bg-white/[0.03]" />
@@ -79,9 +79,15 @@ export default function Products() {
               initial={{ y: 50, opacity: 0 }}
               whileInView={{ y: 0, opacity: 1 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: idx * 0.1 }}
-              whileHover={{ y: -8 }}
-              className="bg-dark-900 border border-white/5 p-6 flex flex-col justify-between group transition-all duration-300 relative"
+              transition={{ duration: 0.25, ease: 'easeOut', delay: idx * 0.05 }}
+              whileHover="hover"
+              variants={{
+                hover: {
+                  y: -6,
+                  boxShadow: '0 12px 32px rgba(0,0,0,0.18)',
+                }
+              }}
+              className="bg-[#1a1a1a] border border-[#333] rounded-[8px] p-6 flex flex-col justify-between group transition-all duration-300 relative cursor-pointer"
             >
               
               {/* Image Area Placeholder */}
@@ -121,8 +127,8 @@ export default function Products() {
 
                 {/* Interactive magnifying eye button */}
                 <div 
-                  onClick={() => setActiveModal(cat)}
-                  className="absolute bottom-4 right-4 p-2 bg-gold/90 hover:bg-gold text-black rounded-none cursor-pointer translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300 shadow-lg"
+                  onClick={(e) => { e.stopPropagation(); setActiveModal(cat); }}
+                  className="absolute bottom-4 right-4 p-2 bg-gold/90 hover:bg-gold text-black rounded-none cursor-pointer translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300 shadow-lg z-20"
                 >
                   <Eye className="w-4 h-4" />
                 </div>
@@ -136,7 +142,16 @@ export default function Products() {
                 <h3 className="font-serif text-lg md:text-xl text-white font-medium group-hover:text-gold transition-colors duration-300">
                   {cat.name}
                 </h3>
-                <div className="w-0 h-[1.5px] bg-gold mt-2 group-hover:w-full transition-all duration-500 ease-out" />
+                {/* Gold Underline Animated via Framer Motion */}
+                <motion.div 
+                  className="h-[2px] bg-[#c9a84c] mt-2 w-full"
+                  style={{ transformOrigin: 'left' }}
+                  initial={{ scaleX: 0 }}
+                  variants={{
+                    hover: { scaleX: 1 }
+                  }}
+                  transition={{ duration: 0.25, ease: 'easeOut' }}
+                />
                 <p className="font-sans text-xs text-gray-400 font-light mt-3 leading-relaxed line-clamp-2">
                   {cat.desc}
                 </p>
@@ -144,8 +159,8 @@ export default function Products() {
 
               {/* Action Button */}
               <button
-                onClick={() => setActiveModal(cat)}
-                className="w-full py-3 bg-white/5 border border-white/10 hover:border-gold hover:bg-gold hover:text-black text-white text-xs uppercase tracking-[0.2em] font-medium transition-all duration-300 inline-flex items-center justify-center gap-2 group-btn"
+                onClick={(e) => { e.stopPropagation(); setActiveModal(cat); }}
+                className="w-full py-3 bg-white/5 border border-white/10 hover:border-gold hover:bg-gold hover:text-black text-white text-xs uppercase tracking-[0.2em] font-medium transition-all duration-300 inline-flex items-center justify-center gap-2 group-btn z-10"
               >
                 View Details
                 <ArrowRight className="w-3.5 h-3.5" />
