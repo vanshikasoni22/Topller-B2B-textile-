@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Menu, X, ArrowUpRight } from 'lucide-react'
+import Logo from './Logo'
 
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false)
@@ -57,11 +58,8 @@ export default function Navbar() {
     >
       <div className="max-w-7xl mx-auto px-6 md:px-12 flex items-center justify-between">
         {/* Brand Logo */}
-        <a href="#" className="flex items-center gap-2 group">
-          <span className="font-serif text-2xl md:text-3xl tracking-[0.2em] text-white font-semibold transition-all duration-300 group-hover:text-gold">
-            TOPLLER
-          </span>
-          <span className="w-1.5 h-1.5 rounded-full bg-gold animate-pulse"></span>
+        <a href="#" className="flex items-center group">
+          <Logo height={32} textColor="text-white" />
         </a>
 
         {/* Desktop Navigation Links */}

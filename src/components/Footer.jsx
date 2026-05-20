@@ -1,4 +1,5 @@
 import { ArrowUp, Mail, ShieldAlert } from 'lucide-react'
+import Logo from './Logo'
 
 export default function Footer() {
   const quickLinks = [
@@ -29,11 +30,8 @@ export default function Footer() {
           
           {/* Brand Info */}
           <div className="md:col-span-2 space-y-6">
-            <div className="flex items-center gap-2">
-              <span className="font-serif text-2xl tracking-[0.25em] text-white font-semibold">
-                TOPLLER
-              </span>
-              <span className="w-1 h-1 rounded-full bg-gold"></span>
+            <div className="flex items-center">
+              <Logo height={36} textColor="text-white" />
             </div>
             <p className="font-sans text-xs text-gray-500 font-light leading-relaxed max-w-sm">
               India's premier high-precision manufacturing brand for men's formal trousers. Supplying elite showrooms, clothing chains, and corporate brands nationwide since 2011.
