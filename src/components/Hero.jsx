@@ -1,5 +1,5 @@
 import { useRef, useState, useEffect } from 'react'
-import { useScroll, useSpring } from 'framer-motion'
+import { useScroll } from 'framer-motion'
 import ScrollBackground from './ScrollBackground'
 import HeroOverlay from './HeroOverlay'
 
@@ -27,25 +27,27 @@ export default function Hero() {
     offset: ['start start', 'end end'],
   })
 
-  // Spring-smoothed scroll value for buttery-smooth animations
-  const smoothProgress = useSpring(scrollYProgress, {
-    stiffness: 60,
-    damping: 20,
-    restDelta: 0.001,
-  })
-
   return (
     <section
       id="hero"
       ref={containerRef}
-      // BUG 1 & BUG 7: min-height 500vh on desktop / 250vh on mobile, z-index: 0
-      className={`relative z-0 overflow-hidden ${isMobile ? 'min-h-[250vh]' : 'min-h-[500vh]'}`}
+      style={{
+        height: isMobile ? '250vh' : '500vh',
+        position: 'relative'
+      }}
     >
       {/* BUG 1: Inner container sticky to top, taking full viewport height */}
-      <div className="sticky top-0 h-screen w-full overflow-hidden">
-
+      <div
+        style={{
+          position: 'sticky',
+          top: 0,
+          height: '100vh',
+          width: '100%',
+          overflow: 'hidden'
+        }}
+      >
         {/* Layer 1 — Background frames (Z-Index: 1 set inside TextureFrame) */}
-        <ScrollBackground sectionRef={containerRef} isMobile={isMobile} />
+        <ScrollBackground scrollYProgress={scrollYProgress} isMobile={isMobile} />
 
         {/* BUG 6: Permanent dark overlay always active on top of background (Z-Index: 5) */}
         <div 
@@ -59,7 +61,7 @@ export default function Hero() {
         />
 
         {/* Layer 2 — Interactive Text overlay (Z-Index: 10) */}
-        <HeroOverlay scrollProgress={smoothProgress} />
+        <HeroOverlay scrollYProgress={scrollYProgress} />
 
       </div>
     </section>

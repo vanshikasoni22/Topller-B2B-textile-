@@ -11,23 +11,17 @@ import { ArrowRight, Sparkles } from 'lucide-react'
  *  - Reveal line "From Thread to Trouser — Since 2011" fades in between 60%→80%
  *  - Frame label (bottom-left corner) updates per frame
  */
-export default function HeroOverlay({ scrollProgress }) {
-  // Main text fades out after halfway through the documentary
-  const mainOpacity = useTransform(scrollProgress, [0, 0.50, 0.70], [1, 1, 0])
-  const mainY = useTransform(scrollProgress, [0.50, 0.72], ['0px', '-24px'])
+export default function HeroOverlay({ scrollYProgress }) {
+  // Main text fades out as we transition into Frame 3
+  const mainOpacity = useTransform(scrollYProgress, [0, 0.35, 0.42], [1, 1, 0])
+  const mainY = useTransform(scrollYProgress, [0.35, 0.42], ['0px', '-24px'])
 
-  // Reveal line fades in as main fades out
-  const revealOpacity = useTransform(scrollProgress, [0.60, 0.78, 0.92, 1.0], [0, 1, 1, 0])
+  // Reveal line fades in as main fades out (around Frame 3 and Frame 4)
+  const revealOpacity = useTransform(scrollYProgress, [0.42, 0.48, 0.72, 0.78], [0, 1, 1, 0])
 
   // Payoff line fades in at the very end (Frame 5)
-  const payoffOpacity = useTransform(scrollProgress, [0.88, 1.0], [0, 1])
-  const payoffY = useTransform(scrollProgress, [0.88, 1.0], ['18px', '0px'])
-
-  // Frame step indicator at bottom (0–4 maps to frames 1–5)
-  const frameIndex = useTransform(scrollProgress,
-    [0, 0.23, 0.46, 0.68, 0.88],
-    [0, 1, 2, 3, 4]
-  )
+  const payoffOpacity = useTransform(scrollYProgress, [0.78, 0.88], [0, 1])
+  const payoffY = useTransform(scrollYProgress, [0.78, 0.88], ['18px', '0px'])
 
   const frameLabels = [
     'I — Raw Thread',
@@ -45,8 +39,8 @@ export default function HeroOverlay({ scrollProgress }) {
   }
 
   return (
-    // Sticky wrapper — stays on screen while section scrolls behind it
-    <div className="sticky top-0 h-screen w-full flex items-center justify-center z-20 pointer-events-none">
+    // Absolute container overlaying the sticky parent container
+    <div className="absolute inset-0 flex items-center justify-center z-20 pointer-events-none">
 
       {/* ── Main Headline Block ──────────────────────────────────────── */}
       <motion.div
@@ -147,7 +141,7 @@ export default function HeroOverlay({ scrollProgress }) {
 
       {/* ── Scroll Indicator (visible only at top) ──────────────────── */}
       <motion.div
-        style={{ opacity: useTransform(scrollProgress, [0, 0.08], [1, 0]) }}
+        style={{ opacity: useTransform(scrollYProgress, [0, 0.08], [1, 0]) }}
         className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 pointer-events-none"
       >
         <span className="text-[9px] uppercase tracking-[0.32em] text-gray-500 font-medium">
@@ -168,7 +162,7 @@ export default function HeroOverlay({ scrollProgress }) {
             Production Stage
           </span>
           <motion.span
-            style={{ opacity: useTransform(scrollProgress, [0, 0.05], [0, 1]) }}
+            style={{ opacity: useTransform(scrollYProgress, [0, 0.05], [0, 1]) }}
             className="font-sans text-[10px] text-gold uppercase tracking-wider font-semibold"
           >
             {frameLabels.map((label, i) => (
@@ -176,18 +170,18 @@ export default function HeroOverlay({ scrollProgress }) {
                 key={i}
                 style={{
                   opacity: useTransform(
-                    scrollProgress,
+                    scrollYProgress,
                     i === 0
-                      ? [0, 0, 0.23]
+                      ? [0, 0.15, 0.2]
                       : i === 1
-                      ? [0.18, 0.23, 0.46]
+                      ? [0.15, 0.28, 0.42]
                       : i === 2
-                      ? [0.42, 0.52, 0.68]
+                      ? [0.35, 0.48, 0.62]
                       : i === 3
-                      ? [0.64, 0.72, 0.88]
-                      : [0.84, 0.92, 1.0],
+                      ? [0.55, 0.68, 0.82]
+                      : [0.78, 0.9, 1.0],
                     i === 0
-                      ? [0, 1, 0]
+                      ? [1, 1, 0]
                       : i < 4
                       ? [0, 1, 0]
                       : [0, 1, 1],
@@ -205,24 +199,40 @@ export default function HeroOverlay({ scrollProgress }) {
 
       {/* ── Bottom-right: Progress Dots ───────────────────────────────── */}
       <div className="absolute bottom-8 right-8 hidden md:flex flex-col gap-2 items-center pointer-events-none">
-        {[0, 0.23, 0.46, 0.68, 0.88].map((threshold, i) => (
-          <motion.div
-            key={i}
-            style={{
-              opacity: useTransform(
-                scrollProgress,
-                [Math.max(0, threshold - 0.04), threshold, threshold + 0.22],
-                [0.2, 1, 0.2]
-              ),
-              scale: useTransform(
-                scrollProgress,
-                [Math.max(0, threshold - 0.04), threshold, threshold + 0.22],
-                [0.7, 1.3, 0.7]
-              ),
-            }}
-            className="w-1.5 h-1.5 rounded-full bg-gold"
-          />
-        ))}
+        {[0, 1, 2, 3, 4].map((index) => {
+          const range = index === 0 
+            ? [0, 0.15, 0.2]
+            : index === 1
+            ? [0.15, 0.28, 0.42]
+            : index === 2
+            ? [0.35, 0.48, 0.62]
+            : index === 3
+            ? [0.55, 0.68, 0.82]
+            : [0.78, 0.9, 1.0];
+          
+          const outputOpacity = index === 0
+            ? [1, 1, 0.2]
+            : index === 4
+            ? [0.2, 1, 1]
+            : [0.2, 1, 0.2];
+
+          const outputScale = index === 0
+            ? [1.3, 1.3, 0.7]
+            : index === 4
+            ? [0.7, 1.3, 1.3]
+            : [0.7, 1.3, 0.7];
+
+          return (
+            <motion.div
+              key={index}
+              style={{
+                opacity: useTransform(scrollYProgress, range, outputOpacity),
+                scale: useTransform(scrollYProgress, range, outputScale),
+              }}
+              className="w-1.5 h-1.5 rounded-full bg-gold"
+            />
+          );
+        })}
       </div>
 
     </div>

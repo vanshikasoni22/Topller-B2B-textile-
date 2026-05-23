@@ -3,26 +3,29 @@ import { motion, useScroll, useTransform, useSpring } from 'framer-motion'
 import { Scissors, CheckCircle2, Layers, Shirt } from 'lucide-react'
 
 export default function ProductionLine() {
-  const containerRef = useRef(null)
+  const anatomyRef = useRef(null)
   
   // Track scroll position of the entire section
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
+  const { scrollYProgress: anatomyProgress } = useScroll({
+    target: anatomyRef,
     offset: ['start start', 'end end']
   })
 
   // Smooth out the scroll animation values
-  const smoothProgress = useSpring(scrollYProgress, {
-    stiffness: 80,
-    damping: 25,
+  const smoothProgress = useSpring(anatomyProgress, {
+    stiffness: 60,
+    damping: 20,
     restDelta: 0.001
   })
 
-  // Horizontal translation for the track: from 0 (left-aligned) to -60% (scrolled right)
-  const xTranslation = useTransform(smoothProgress, [0, 1], ['0%', '-60%'])
+  // 5 slides: translate from 0% to -80%
+  const slideX = useTransform(smoothProgress, [0, 1], ['0%', '-80%'])
 
-  // Gold stitch progress bar running horizontally
-  const stitchWidth = useTransform(smoothProgress, [0, 1], ['0%', '100%'])
+  // Gold stitch progress bar running horizontally across the track
+  const trackStitchWidth = useTransform(smoothProgress, [0, 1], ['0%', '80vw'])
+
+  // Bottom scroll value progress bar
+  const bottomStitchWidth = useTransform(smoothProgress, [0, 1], ['0%', '100%'])
 
   const steps = [
     {
@@ -82,12 +85,26 @@ export default function ProductionLine() {
   ]
 
   return (
-    <div ref={containerRef} className="relative h-[250vh] bg-dark-950">
+    <section ref={anatomyRef} style={{ height: '500vh', position: 'relative' }}>
       {/* Sticky container that keeps elements in screen space */}
-      <div className="sticky top-0 h-screen overflow-hidden flex flex-col justify-between py-12 md:py-20 z-10">
+      <div 
+        style={{ 
+          position: 'sticky', 
+          top: 0, 
+          height: '100vh', 
+          overflow: 'hidden',
+          width: '100%',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'space-between',
+          paddingTop: '3rem',
+          paddingBottom: '3rem'
+        }} 
+        className="bg-dark-950 z-10"
+      >
         
         {/* Top Header Section */}
-        <div className="max-w-7xl mx-auto px-6 md:px-12 w-full text-center md:text-left">
+        <div className="max-w-7xl mx-auto px-6 md:px-12 w-full text-center md:text-left z-20">
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
             <div>
               <span className="font-sans text-xs uppercase tracking-[0.3em] text-gold font-semibold">
@@ -104,79 +121,94 @@ export default function ProductionLine() {
         </div>
 
         {/* Horizontal Moving Scroll Track */}
-        <div className="relative w-full flex items-center overflow-hidden my-auto py-8">
+        <div className="relative w-full flex items-center overflow-hidden my-auto py-8 h-[60vh]">
           
           {/* Background Stitch Line Track */}
-          <div className="absolute left-[15vw] right-[15vw] h-[2px] bg-white/5 top-1/2 -translate-y-1/2 z-0" />
+          <div className="absolute left-[10vw] right-[10vw] h-[2px] bg-white/5 top-1/2 -translate-y-1/2 z-0" />
           
           {/* Animated Gold Stitch Progress Line */}
           <motion.div 
-            style={{ width: stitchWidth }}
-            className="absolute left-[15vw] h-[2px] bg-gradient-to-r from-gold/40 to-gold top-1/2 -translate-y-1/2 z-0 origin-left"
+            style={{ width: trackStitchWidth }}
+            className="absolute left-[10vw] h-[2px] bg-gradient-to-r from-gold/40 to-gold top-1/2 -translate-y-1/2 z-0 origin-left"
           />
 
           {/* Movable Component Slider */}
           <motion.div 
-            style={{ x: xTranslation }} 
-            className="flex gap-20 md:gap-32 pl-[15vw] pr-[50vw] items-center z-10 whitespace-nowrap"
+            style={{ 
+              display: 'flex',
+              width: '500%',  // 5 slides × 100%
+              height: '100%',
+              x: slideX 
+            }} 
+            className="items-center z-10"
           >
-            {steps.map((step, index) => {
-              return (
-                <div 
-                  key={step.id} 
-                  className="w-[80vw] sm:w-[500px] flex-shrink-0 inline-block align-top whitespace-normal"
+            {steps.map((step) => (
+              <div 
+                key={step.id} 
+                style={{ 
+                  width: '20%', 
+                  height: '100%', 
+                  flexShrink: 0,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  padding: '0 4vw'
+                }}
+              >
+                <motion.div 
+                  whileHover={{ y: -6 }}
+                  style={{ cursor: 'pointer' }}
+                  className="w-full max-w-[550px] group relative p-8 md:p-10 bg-dark-900 border border-white/5 hover:border-gold/30 transition-colors duration-500 rounded-none shadow-2xl"
                 >
-                  <div className="group relative p-8 md:p-10 bg-dark-900 border border-white/5 hover:border-gold/30 transition-colors duration-500 rounded-none shadow-2xl">
-                    {/* Step Corner Accent */}
-                    <div className="absolute top-0 right-0 w-12 h-12 overflow-hidden">
-                      <div className="absolute top-[-10px] right-[-10px] w-20 h-20 bg-gold/5 rotate-45" />
-                    </div>
-
-                    {/* Step Number Badge */}
-                    <div className="flex items-center justify-between mb-8">
-                      <div className="p-3 bg-dark-800 border border-white/5 inline-flex items-center justify-center rounded-none shadow-inner">
-                        {step.icon()}
-                      </div>
-                      <span className="font-serif text-5xl md:text-6xl text-white/5 font-extrabold tracking-tighter select-none">
-                        0{step.id}
-                      </span>
-                    </div>
-
-                    {/* Step Info Badge */}
-                    <span className="inline-block text-[10px] uppercase tracking-[0.2em] px-3 py-1 bg-gold/10 text-gold border border-gold/20 font-semibold mb-4">
-                      {step.badge}
-                    </span>
-
-                    {/* Step Name */}
-                    <h3 className="font-serif text-xl md:text-2xl text-white font-medium mb-3">
-                      {step.title}
-                    </h3>
-
-                    {/* Step Description */}
-                    <p className="font-sans text-sm text-gray-400 font-light leading-relaxed mb-6">
-                      {step.desc}
-                    </p>
-
-                    {/* Specs / Details */}
-                    <div className="pt-4 border-t border-white/5">
-                      <span className="text-[11px] font-mono tracking-wider text-gray-500 uppercase">
-                        Specs: {step.detail}
-                      </span>
-                    </div>
+                  {/* Step Corner Accent */}
+                  <div className="absolute top-0 right-0 w-12 h-12 overflow-hidden">
+                    <div className="absolute top-[-10px] right-[-10px] w-20 h-20 bg-gold/5 rotate-45" />
                   </div>
-                </div>
-              )
-            })}
+
+                  {/* Step Number Badge */}
+                  <div className="flex items-center justify-between mb-8">
+                    <div className="p-3 bg-dark-800 border border-white/5 inline-flex items-center justify-center rounded-none shadow-inner">
+                      {step.icon()}
+                    </div>
+                    <span className="font-serif text-5xl md:text-6xl text-white/5 font-extrabold tracking-tighter select-none">
+                      0{step.id}
+                    </span>
+                  </div>
+
+                  {/* Step Info Badge */}
+                  <span className="inline-block text-[10px] uppercase tracking-[0.2em] px-3 py-1 bg-gold/10 text-gold border border-gold/20 font-semibold mb-4">
+                    {step.badge}
+                  </span>
+
+                  {/* Step Name */}
+                  <h3 className="font-serif text-xl md:text-2xl text-white font-medium mb-3">
+                    {step.title}
+                  </h3>
+
+                  {/* Step Description */}
+                  <p className="font-sans text-sm text-gray-400 font-light leading-relaxed mb-6">
+                    {step.desc}
+                  </p>
+
+                  {/* Specs / Details */}
+                  <div className="pt-4 border-t border-white/5">
+                    <span className="text-[11px] font-mono tracking-wider text-gray-500 uppercase">
+                      Specs: {step.detail}
+                    </span>
+                  </div>
+                </motion.div>
+              </div>
+            ))}
           </motion.div>
         </div>
 
         {/* Bottom Interactive Progress Info */}
-        <div className="max-w-7xl mx-auto px-6 md:px-12 w-full flex items-center justify-between border-t border-white/5 pt-8">
+        <div className="max-w-7xl mx-auto px-6 md:px-12 w-full flex items-center justify-between border-t border-white/5 pt-8 z-20">
           <div className="flex items-center gap-4">
             <span className="font-mono text-xs text-gold">SCROLL VALUE</span>
             <div className="w-24 h-1 bg-white/5 relative overflow-hidden">
               <motion.div 
-                style={{ width: stitchWidth }} 
+                style={{ width: bottomStitchWidth }} 
                 className="absolute inset-y-0 left-0 bg-gold"
               />
             </div>
@@ -187,6 +219,6 @@ export default function ProductionLine() {
         </div>
 
       </div>
-    </div>
+    </section>
   )
 }

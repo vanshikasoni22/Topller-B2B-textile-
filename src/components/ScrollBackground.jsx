@@ -15,25 +15,13 @@ import frame5 from '../assets/frame5-final-trouser.png'
  * Manages all 5 cinematic background frames.
  * Opacities are driven directly by exact ranges in BUG 3.
  */
-export default function ScrollBackground({ sectionRef, isMobile }) {
-  const { scrollYProgress } = useScroll({
-    target: sectionRef,
-    offset: ['start start', 'end end'],
-  })
-
-  // Spring-smooth the raw scroll value for buttery 60fps feel
-  const progress = useSpring(scrollYProgress, {
-    stiffness: 60,
-    damping: 20,
-    restDelta: 0.001,
-  })
-
-  // Exact opacities driven by BUG 3
-  const op1 = useTransform(progress, [0, 0.25], [1, 0])
-  const op2 = useTransform(progress, [0.15, 0.3, 0.45], [0, 1, 0])
-  const op3 = useTransform(progress, [0.35, 0.5, 0.65], [0, 1, 0])
-  const op4 = useTransform(progress, [0.55, 0.7, 0.85], [0, 1, 0])
-  const op5 = useTransform(progress, [0.8, 1.0], [0, 1])
+export default function ScrollBackground({ scrollYProgress, isMobile }) {
+  // Exact opacities driven by BUG 1 STEP 4
+  const op1 = useTransform(scrollYProgress, [0, 0.2], [1, 0])
+  const op2 = useTransform(scrollYProgress, [0.15, 0.28, 0.42], [0, 1, 0])
+  const op3 = useTransform(scrollYProgress, [0.35, 0.48, 0.62], [0, 1, 0])
+  const op4 = useTransform(scrollYProgress, [0.55, 0.68, 0.82], [0, 1, 0])
+  const op5 = useTransform(scrollYProgress, [0.78, 1.0], [0, 1])
 
   const opacity1 = isMobile ? undefined : op1
   const opacity2 = isMobile ? undefined : op2
@@ -48,24 +36,24 @@ export default function ScrollBackground({ sectionRef, isMobile }) {
   const style5 = isMobile ? { animation: 'frameCycle5 15s infinite' } : {}
 
   // Subtle parallax Y for Frame 1 threads drifting forward
-  const f1Y = useTransform(progress, [0, 0.3], ['0%', '-6%'])
+  const f1Y = useTransform(scrollYProgress, [0, 0.2], ['0%', '-6%'])
 
   // Subtle scale zoom for Frame 3 fabric unroll feel
-  const f3Scale = useTransform(progress, [0.35, 0.65], [1.04, 1.0])
+  const f3Scale = useTransform(scrollYProgress, [0.35, 0.62], [1.04, 1.0])
 
   // Frame 5 upward float
-  const f5Y = useTransform(progress, [0.8, 1], ['4%', '0%'])
+  const f5Y = useTransform(scrollYProgress, [0.78, 1], ['4%', '0%'])
 
-  // Stitch line sub-progress: map full scroll 0.55–0.85 → 0–1
-  const stitchProgress = useTransform(progress, [0.55, 0.85], [0, 1])
+  // Stitch line sub-progress: map full scroll 0.55–0.82 → 0–1
+  const stitchProgress = useTransform(scrollYProgress, [0.55, 0.82], [0, 1])
 
   return (
-    <div className="absolute inset-0 overflow-hidden z-1">
+    <div className="absolute inset-0 overflow-hidden z-[1]">
 
       {/* ── FRAME 1 ── */}
       <TextureFrame
         image={frame1}
-        scrollProgress={progress}
+        scrollProgress={scrollYProgress}
         opacity={opacity1}
         style={style1}
         overlayOpacity={0.52}
@@ -92,7 +80,7 @@ export default function ScrollBackground({ sectionRef, isMobile }) {
       {/* ── FRAME 2 ── */}
       <TextureFrame
         image={frame2}
-        scrollProgress={progress}
+        scrollProgress={scrollYProgress}
         opacity={opacity2}
         style={style2}
         overlayOpacity={0.55}
@@ -113,7 +101,7 @@ export default function ScrollBackground({ sectionRef, isMobile }) {
       {/* ── FRAME 3 ── */}
       <TextureFrame
         image={frame3}
-        scrollProgress={progress}
+        scrollProgress={scrollYProgress}
         opacity={opacity3}
         style={style3}
         overlayOpacity={0.50}
@@ -124,7 +112,7 @@ export default function ScrollBackground({ sectionRef, isMobile }) {
       {/* ── FRAME 4 ── */}
       <TextureFrame
         image={frame4}
-        scrollProgress={progress}
+        scrollProgress={scrollYProgress}
         opacity={opacity4}
         style={style4}
         overlayOpacity={0.60}
@@ -137,7 +125,7 @@ export default function ScrollBackground({ sectionRef, isMobile }) {
       {/* ── FRAME 5 ── */}
       <TextureFrame
         image={frame5}
-        scrollProgress={progress}
+        scrollProgress={scrollYProgress}
         opacity={opacity5}
         style={style5}
         overlayOpacity={0.45}
