@@ -128,8 +128,8 @@ export default function Contact() {
                     Corporate Headquarters
                   </span>
                   <p className="font-sans text-sm text-white font-medium leading-relaxed">
-                    Vardhaman Textiles Tower, Sector 3,<br />
-                    Rohini, New Delhi - 110085, India
+                    Gala No.8,Meher Tiles compound,<br />
+                    Subhash Road- Jogeshwari(E) Mumbai-400060
                   </p>
                 </div>
               </div>
