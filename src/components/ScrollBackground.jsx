@@ -56,7 +56,7 @@ export default function ScrollBackground({ scrollYProgress, isMobile }) {
         scrollProgress={scrollYProgress}
         opacity={opacity1}
         style={style1}
-        overlayOpacity={0.52}
+        overlayOpacity={0.30}
         vignette
         motionProps={isMobile ? {} : { y: f1Y }}
       >
@@ -83,7 +83,7 @@ export default function ScrollBackground({ scrollYProgress, isMobile }) {
         scrollProgress={scrollYProgress}
         opacity={opacity2}
         style={style2}
-        overlayOpacity={0.55}
+        overlayOpacity={0.32}
         vignette
       >
         {/* Animated horizontal sweep bar — simulates shuttle motion */}
@@ -104,7 +104,7 @@ export default function ScrollBackground({ scrollYProgress, isMobile }) {
         scrollProgress={scrollYProgress}
         opacity={opacity3}
         style={style3}
-        overlayOpacity={0.50}
+        overlayOpacity={0.30}
         vignette
         motionProps={isMobile ? {} : { scale: f3Scale }}
       />
@@ -115,7 +115,7 @@ export default function ScrollBackground({ scrollYProgress, isMobile }) {
         scrollProgress={scrollYProgress}
         opacity={opacity4}
         style={style4}
-        overlayOpacity={0.60}
+        overlayOpacity={0.35}
         vignette
       >
         {/* SVG stitch line draws across center as you scroll through this frame (hidden on mobile) */}
@@ -128,7 +128,7 @@ export default function ScrollBackground({ scrollYProgress, isMobile }) {
         scrollProgress={scrollYProgress}
         opacity={opacity5}
         style={style5}
-        overlayOpacity={0.45}
+        overlayOpacity={0.28}
         vignette
         motionProps={isMobile ? {} : { y: f5Y }}
       >

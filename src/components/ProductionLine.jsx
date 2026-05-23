@@ -4,27 +4,23 @@ import { Scissors, CheckCircle2, Layers, Shirt } from 'lucide-react'
 
 export default function ProductionLine() {
   const anatomyRef = useRef(null)
-  
-  // Track scroll position of the entire section
+
   const { scrollYProgress: anatomyProgress } = useScroll({
     target: anatomyRef,
-    offset: ['start start', 'end end']
+    offset: ['start start', 'end end'],
   })
 
-  // Smooth out the scroll animation values
   const smoothProgress = useSpring(anatomyProgress, {
     stiffness: 60,
     damping: 20,
-    restDelta: 0.001
+    restDelta: 0.001,
   })
 
-  // 5 slides: translate from 0% to -80%
+  // Translate 5 cards: card width = 420px, gap = 32px, so step = 452px
+  // But we use percentage of total track width to keep it responsive
   const slideX = useTransform(smoothProgress, [0, 1], ['0%', '-80%'])
 
-  // Gold stitch progress bar running horizontally across the track
   const trackStitchWidth = useTransform(smoothProgress, [0, 1], ['0%', '80vw'])
-
-  // Bottom scroll value progress bar
   const bottomStitchWidth = useTransform(smoothProgress, [0, 1], ['0%', '100%'])
 
   const steps = [
@@ -33,78 +29,70 @@ export default function ProductionLine() {
       title: 'Raw Fabric Selection',
       desc: 'Sourcing extra-long staple cotton & premium viscose fibers for our custom-developed high-density weave.',
       badge: 'Grade A+ Imports',
-      icon: (props) => <Layers {...props} className="w-10 h-10 text-gold" />,
-      detail: '240 GSM | Breathable Viscose | Wrinkle Resistance'
+      icon: () => <Layers className="w-8 h-8 text-gold" />,
+      detail: '240 GSM | Breathable Viscose | Wrinkle Resistance',
     },
     {
       id: 2,
       title: 'Precision Laser Cutting',
       desc: 'Computerized CNC cutters scan every fabric centimeter to ensure sub-millimeter precision for perfect templates.',
       badge: 'CNC Micro-Control',
-      icon: (props) => <Scissors {...props} className="w-10 h-10 text-gold" />,
-      detail: '0.2mm tolerance | Digital sizing matching'
+      icon: () => <Scissors className="w-8 h-8 text-gold" />,
+      detail: '0.2mm tolerance | Digital sizing matching',
     },
     {
       id: 3,
       title: 'Artisanal Stitching',
       desc: 'Duo-locked reinforced seams tailored using German high-tensile threads and premium machines.',
       badge: '12 Stitches/Inch',
-      icon: (props) => (
-        <svg 
-          viewBox="0 0 24 24" 
-          fill="none" 
-          stroke="currentColor" 
-          strokeWidth="2" 
-          strokeLinecap="round" 
-          strokeLinejoin="round" 
-          className="w-10 h-10 text-gold"
-        >
+      icon: () => (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"
+          strokeLinecap="round" strokeLinejoin="round" className="w-8 h-8 text-gold">
           <line x1="5" y1="19" x2="19" y2="5" />
           <circle cx="17.5" cy="6.5" r="0.75" fill="currentColor" />
           <path d="M19 5c2 2 1 5-2 6s-6-1-8 2-2 4-5 4" />
         </svg>
       ),
-      detail: 'Gutterman threads | Flexible flexi-waistband technology'
+      detail: 'Gutterman threads | Flexi-waistband tech',
     },
     {
       id: 4,
       title: '18-Point Quality Check',
       desc: '100% inspection under high-lumen lamps covering rise, pockets, zip durability, and alignment stress-points.',
       badge: 'Zero Defect Policy',
-      icon: (props) => <CheckCircle2 {...props} className="w-10 h-10 text-gold" />,
-      detail: 'Zero deviation tolerance | Active inspection'
+      icon: () => <CheckCircle2 className="w-8 h-8 text-gold" />,
+      detail: 'Zero deviation tolerance | Active inspection',
     },
     {
       id: 5,
       title: 'The Final Trouser',
       desc: 'Vacuum press-ironing, sleek brand-tags styling, and eco-friendly protective packaging, ready for nationwide dispatch.',
       badge: 'Retail Ready',
-      icon: (props) => <Shirt {...props} className="w-10 h-10 text-gold" />,
-      detail: 'Hanger-packed | Barcoded dispatch routing'
-    }
+      icon: () => <Shirt className="w-8 h-8 text-gold" />,
+      detail: 'Hanger-packed | Barcoded dispatch routing',
+    },
   ]
 
   return (
     <section ref={anatomyRef} style={{ height: '500vh', position: 'relative' }}>
-      {/* Sticky container that keeps elements in screen space */}
-      <div 
-        style={{ 
-          position: 'sticky', 
-          top: 0, 
-          height: '100vh', 
+      {/* Sticky viewport */}
+      <div
+        style={{
+          position: 'sticky',
+          top: 0,
+          height: '100vh',
           overflow: 'hidden',
           width: '100%',
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'space-between',
-          paddingTop: '3rem',
-          paddingBottom: '3rem'
-        }} 
-        className="bg-dark-950 z-10"
+          paddingTop: '2.5rem',
+          paddingBottom: '2rem',
+        }}
+        className="bg-dark-950"
       >
-        
-        {/* Top Header Section */}
-        <div className="max-w-7xl mx-auto px-6 md:px-12 w-full text-center md:text-left z-20">
+        {/* ── Header ── */}
+        <div className="max-w-7xl mx-auto px-6 md:px-12 w-full">
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
             <div>
               <span className="font-sans text-xs uppercase tracking-[0.3em] text-gold font-semibold">
@@ -115,85 +103,159 @@ export default function ProductionLine() {
               </h2>
             </div>
             <p className="font-sans text-sm text-gray-400 font-light max-w-md md:text-right">
-              Scroll down to watch our production floor in action. See how raw fibers transform into India's finest formal trousers.
+              Scroll to watch our production floor in action. Raw fibers transformed into India's finest formal trousers.
             </p>
           </div>
         </div>
 
-        {/* Horizontal Moving Scroll Track */}
-        <div className="relative w-full flex items-center overflow-hidden my-auto py-8 h-[60vh]">
-          
-          {/* Background Stitch Line Track */}
-          <div className="absolute left-[10vw] right-[10vw] h-[2px] bg-white/5 top-1/2 -translate-y-1/2 z-0" />
-          
-          {/* Animated Gold Stitch Progress Line */}
-          <motion.div 
+        {/* ── Card Track ── */}
+        <div
+          className="relative w-full overflow-hidden"
+          style={{ height: '340px' }}
+        >
+          {/* Background track line */}
+          <div className="absolute left-[8vw] right-[8vw] h-[1px] bg-white/5 top-1/2 -translate-y-1/2 z-0" />
+
+          {/* Animated gold stitch line */}
+          <motion.div
             style={{ width: trackStitchWidth }}
-            className="absolute left-[10vw] h-[2px] bg-gradient-to-r from-gold/40 to-gold top-1/2 -translate-y-1/2 z-0 origin-left"
+            className="absolute left-[8vw] h-[1px] bg-gradient-to-r from-gold/30 to-gold top-1/2 -translate-y-1/2 z-0 origin-left"
           />
 
-          {/* Movable Component Slider */}
-          <motion.div 
-            style={{ 
+          {/* Sliding strip: 5 cards × 20% = 500% total */}
+          <motion.div
+            style={{
               display: 'flex',
-              width: '500%',  // 5 slides × 100%
+              width: '500%',
               height: '100%',
-              x: slideX 
-            }} 
-            className="items-center z-10"
+              x: slideX,
+            }}
           >
             {steps.map((step) => (
-              <div 
-                key={step.id} 
-                style={{ 
-                  width: '20%', 
-                  height: '100%', 
+              <div
+                key={step.id}
+                style={{
+                  width: '20%',
+                  height: '100%',
                   flexShrink: 0,
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  padding: '0 4vw'
+                  padding: '0 5vw',
                 }}
               >
-                <motion.div 
-                  whileHover={{ y: -6 }}
-                  style={{ cursor: 'pointer' }}
-                  className="w-full max-w-[550px] group relative p-8 md:p-10 bg-dark-900 border border-white/5 hover:border-gold/30 transition-colors duration-500 rounded-none shadow-2xl"
+                {/* ── Card ── fixed 320px wide, 300px tall — uniform for all 5 */}
+                <motion.div
+                  whileHover={{ y: -4, borderColor: 'rgba(201,168,76,0.35)' }}
+                  transition={{ duration: 0.25 }}
+                  style={{
+                    width: '340px',
+                    height: '300px',
+                    flexShrink: 0,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'space-between',
+                    padding: '28px 28px 22px',
+                    backgroundColor: '#111111',
+                    border: '1px solid rgba(255,255,255,0.06)',
+                    position: 'relative',
+                    cursor: 'default',
+                  }}
                 >
-                  {/* Step Corner Accent */}
-                  <div className="absolute top-0 right-0 w-12 h-12 overflow-hidden">
-                    <div className="absolute top-[-10px] right-[-10px] w-20 h-20 bg-gold/5 rotate-45" />
+                  {/* Corner accent */}
+                  <div style={{
+                    position: 'absolute', top: 0, right: 0,
+                    width: 40, height: 40, overflow: 'hidden',
+                  }}>
+                    <div style={{
+                      position: 'absolute', top: -8, right: -8,
+                      width: 60, height: 60,
+                      background: 'rgba(201,168,76,0.06)',
+                      transform: 'rotate(45deg)',
+                    }} />
                   </div>
 
-                  {/* Step Number Badge */}
-                  <div className="flex items-center justify-between mb-8">
-                    <div className="p-3 bg-dark-800 border border-white/5 inline-flex items-center justify-center rounded-none shadow-inner">
+                  {/* Top row: icon + step number */}
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                    <div style={{
+                      padding: '10px',
+                      background: '#1a1a1a',
+                      border: '1px solid rgba(255,255,255,0.05)',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}>
                       {step.icon()}
                     </div>
-                    <span className="font-serif text-5xl md:text-6xl text-white/5 font-extrabold tracking-tighter select-none">
+                    <span style={{
+                      fontFamily: 'Playfair Display, serif',
+                      fontSize: '52px',
+                      color: 'rgba(255,255,255,0.04)',
+                      fontWeight: 800,
+                      lineHeight: 1,
+                      userSelect: 'none',
+                    }}>
                       0{step.id}
                     </span>
                   </div>
 
-                  {/* Step Info Badge */}
-                  <span className="inline-block text-[10px] uppercase tracking-[0.2em] px-3 py-1 bg-gold/10 text-gold border border-gold/20 font-semibold mb-4">
-                    {step.badge}
-                  </span>
+                  {/* Middle: badge + title + desc */}
+                  <div style={{ flex: 1, marginTop: '14px', overflow: 'hidden' }}>
+                    <span style={{
+                      display: 'inline-block',
+                      fontSize: '9px',
+                      textTransform: 'uppercase',
+                      letterSpacing: '0.2em',
+                      padding: '3px 10px',
+                      background: 'rgba(201,168,76,0.08)',
+                      border: '1px solid rgba(201,168,76,0.2)',
+                      color: '#c9a84c',
+                      fontWeight: 600,
+                      marginBottom: '10px',
+                    }}>
+                      {step.badge}
+                    </span>
 
-                  {/* Step Name */}
-                  <h3 className="font-serif text-xl md:text-2xl text-white font-medium mb-3">
-                    {step.title}
-                  </h3>
+                    <h3 style={{
+                      fontFamily: 'Playfair Display, serif',
+                      fontSize: '17px',
+                      color: '#ffffff',
+                      fontWeight: 500,
+                      marginBottom: '8px',
+                      lineHeight: 1.3,
+                    }}>
+                      {step.title}
+                    </h3>
 
-                  {/* Step Description */}
-                  <p className="font-sans text-sm text-gray-400 font-light leading-relaxed mb-6">
-                    {step.desc}
-                  </p>
+                    <p style={{
+                      fontFamily: 'Inter, sans-serif',
+                      fontSize: '12px',
+                      color: '#888888',
+                      fontWeight: 300,
+                      lineHeight: 1.65,
+                      display: '-webkit-box',
+                      WebkitLineClamp: 3,
+                      WebkitBoxOrient: 'vertical',
+                      overflow: 'hidden',
+                    }}>
+                      {step.desc}
+                    </p>
+                  </div>
 
-                  {/* Specs / Details */}
-                  <div className="pt-4 border-t border-white/5">
-                    <span className="text-[11px] font-mono tracking-wider text-gray-500 uppercase">
-                      Specs: {step.detail}
+                  {/* Bottom: specs */}
+                  <div style={{
+                    borderTop: '1px solid rgba(255,255,255,0.05)',
+                    paddingTop: '12px',
+                    marginTop: '4px',
+                  }}>
+                    <span style={{
+                      fontFamily: 'monospace',
+                      fontSize: '10px',
+                      letterSpacing: '0.05em',
+                      color: '#555',
+                      textTransform: 'uppercase',
+                    }}>
+                      {step.detail}
                     </span>
                   </div>
                 </motion.div>
@@ -202,22 +264,23 @@ export default function ProductionLine() {
           </motion.div>
         </div>
 
-        {/* Bottom Interactive Progress Info */}
-        <div className="max-w-7xl mx-auto px-6 md:px-12 w-full flex items-center justify-between border-t border-white/5 pt-8 z-20">
+        {/* ── Footer progress bar ── */}
+        <div className="max-w-7xl mx-auto px-6 md:px-12 w-full flex items-center justify-between border-t border-white/5 pt-5">
           <div className="flex items-center gap-4">
-            <span className="font-mono text-xs text-gold">SCROLL VALUE</span>
-            <div className="w-24 h-1 bg-white/5 relative overflow-hidden">
-              <motion.div 
-                style={{ width: bottomStitchWidth }} 
+            <span className="font-mono text-[10px] text-gold uppercase tracking-widest">
+              Scroll Progress
+            </span>
+            <div className="w-32 h-[2px] bg-white/5 relative overflow-hidden">
+              <motion.div
+                style={{ width: bottomStitchWidth }}
                 className="absolute inset-y-0 left-0 bg-gold"
               />
             </div>
           </div>
-          <span className="font-sans text-xs uppercase tracking-[0.25em] text-gray-500 animate-pulse">
-            DISPATCH READY SYSTEM
+          <span className="font-sans text-[10px] uppercase tracking-[0.25em] text-gray-600 animate-pulse">
+            Dispatch Ready System
           </span>
         </div>
-
       </div>
     </section>
   )
