@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion'
 import { Sparkles, Landmark, Users, Calendar } from 'lucide-react'
+import craftsmanshipImg from '../assets/craftsmanship.png'
 
 export default function About() {
   const stats = [
@@ -131,56 +132,47 @@ export default function About() {
             {/* Primary Visual Block */}
             <div className="relative z-10 w-full aspect-[4/5] bg-dark-950 border border-white/10 p-6 flex flex-col justify-between overflow-hidden group">
               
+              {/* Premium Background Image */}
+              <img 
+                src={craftsmanshipImg} 
+                alt="Exquisite Craftsmanship premium formal trousers detail" 
+                className="absolute inset-0 w-full h-full object-cover z-0 group-hover:scale-105 transition-transform duration-1000 ease-out"
+              />
+
               {/* Animated weave background pattern */}
-              <div className="absolute inset-0 fabric-weave-pattern opacity-60 group-hover:scale-105 transition-transform duration-1000 ease-out" />
+              <div className="absolute inset-0 fabric-weave-pattern opacity-30 pointer-events-none z-10 group-hover:scale-105 transition-transform duration-1000 ease-out" />
               
               {/* Visual overlay gradient to ensure text readability */}
-              <div className="absolute inset-0 bg-gradient-to-t from-dark-950 via-dark-950/20 to-transparent z-0" />
-
-              {/* IMAGE PLACEHOLDER COMMENT - User can place a gorgeous clothing catalog image here */}
-              {/* 
-                IMAGE: Premium close-up fabric texture or model wearing formal trousers.
-                To drop real image:
-                <img 
-                  src="/your-image-path.jpg" 
-                  alt="Premium formal trouser close up" 
-                  className="absolute inset-0 w-full h-full object-cover z-0 group-hover:scale-105 transition-transform duration-1000 ease-out"
-                />
-              */}
-              <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-20 group-hover:opacity-40 transition-opacity">
-                <span className="font-mono text-xs text-white tracking-[0.3em] uppercase bg-black/60 px-4 py-2 border border-white/10">
-                  [ CATALOG IMAGE PLACEHOLDER ]
-                </span>
-              </div>
+              <div className="absolute inset-0 bg-gradient-to-t from-dark-950 via-dark-950/40 to-transparent z-10 pointer-events-none" />
 
               {/* Top Details */}
-              <div className="relative z-10 flex justify-between items-start">
-                <span className="font-mono text-[10px] text-gold tracking-widest uppercase">
+              <div className="relative z-20 flex justify-between items-start">
+                <span className="font-mono text-[10px] text-gold tracking-widest uppercase bg-dark-950/80 px-2 py-1 border border-white/10">
                   BATCH NO. T-792
                 </span>
-                <span className="font-mono text-[10px] text-white/40">
+                <span className="font-mono text-[10px] text-white/60 bg-dark-950/80 px-2 py-1 border border-white/10">
                   55% VISCOSE / 45% POLYESTER
                 </span>
               </div>
 
               {/* Center Text Graphic */}
-              <div className="relative z-10 text-center my-auto flex flex-col items-center">
-                <span className="font-serif text-5xl italic text-gold/25 font-light block mb-2">Purity</span>
+              <div className="relative z-20 text-center my-auto flex flex-col items-center">
+                <span className="font-serif text-5xl italic text-gold/30 font-light block mb-2 drop-shadow-md">Purity</span>
                 <span className="w-12 h-[1px] bg-gold/30 my-2"></span>
-                <p className="font-sans text-[11px] uppercase tracking-[0.2em] text-white/50">
+                <p className="font-sans text-[11px] uppercase tracking-[0.2em] text-white/70 drop-shadow-md">
                   12,000+ Weave Matrix Density
                 </p>
               </div>
 
               {/* Bottom Details */}
-              <div className="relative z-10">
+              <div className="relative z-20 bg-dark-950/70 backdrop-blur-sm p-4 border border-white/10">
                 <div className="flex items-center gap-2 mb-2">
                   <Sparkles className="w-3.5 h-3.5 text-gold" />
                   <span className="font-sans text-[11px] text-white uppercase tracking-widest font-semibold">
                     Signature Finish
                   </span>
                 </div>
-                <p className="font-sans text-xs text-gray-400 font-light leading-relaxed">
+                <p className="font-sans text-xs text-gray-300 font-light leading-relaxed">
                   Anti-pilling, crease-resistant, four-way weave with a soft matte luster that speaks luxury without shouting.
                 </p>
               </div>

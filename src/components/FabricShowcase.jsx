@@ -2,11 +2,18 @@ import { useRef } from 'react'
 import { motion, useScroll, useTransform } from 'framer-motion'
 import { Shield, Sparkles, Wind, RefreshCw, Layers } from 'lucide-react'
 
+// Import textile showcase images
+import woolBlendImg from '../assets/wool-blend.png'
+import polyViscoseImg from '../assets/poly-viscose.png'
+import cottonBlendImg from '../assets/cotton-blend.png'
+import lycraFlexImg from '../assets/lycra-flex.png'
+
 export default function FabricShowcase() {
   const swatches = [
     {
       id: 'wool-blend',
       name: 'Royal Wool Blend',
+      image: woolBlendImg,
       type: 'Mill Grade A-72',
       color: 'bg-dark-800 border border-white/10',
       specs: '70% Wool, 30% Silk-Viscose',
@@ -18,6 +25,7 @@ export default function FabricShowcase() {
     {
       id: 'poly-viscose',
       name: 'Premium Polyester Viscose',
+      image: polyViscoseImg,
       type: 'Executive Gabardine',
       color: 'bg-dark-700 border border-white/5',
       specs: '65% Viscose, 35% Polyester',
@@ -29,6 +37,7 @@ export default function FabricShowcase() {
     {
       id: 'cotton-blend',
       name: 'Long-Staple Cotton Blend',
+      image: cottonBlendImg,
       type: 'Twill Weave Classic',
       color: 'bg-stone-900 border border-white/5',
       specs: '80% ELS Cotton, 20% Silk-blend',
@@ -40,6 +49,7 @@ export default function FabricShowcase() {
     {
       id: 'lycra-flex',
       name: 'Dynamic Stretch Weave',
+      image: lycraFlexImg,
       type: 'Active Kinetic Comfort',
       color: 'bg-slate-900 border border-white/5',
       specs: '62% Poly, 33% Viscose, 5% Lycra',
@@ -87,51 +97,46 @@ export default function FabricShowcase() {
             >
               
               {/* Swatch Color & Texture Preview Box */}
-              <div className="relative aspect-square w-full mb-6 flex flex-col justify-between p-4 overflow-hidden shadow-inner">
+              <div className="relative aspect-square w-full mb-6 flex flex-col justify-between p-4 overflow-hidden shadow-inner border border-white/5">
                 
-                {/* Simulated Swatch Weave Pattern Background */}
-                <div 
-                  className="absolute inset-0 z-0 opacity-40 group-hover:scale-105 transition-transform duration-700" 
-                  style={{ 
-                    backgroundColor: '#121212',
-                    backgroundImage: swatch.pattern,
-                    backgroundSize: '12px 12px'
-                  }} 
-                />
+                {/* Real Swatch / Process Image */}
+                {swatch.image ? (
+                  <img 
+                    src={swatch.image} 
+                    alt={swatch.name} 
+                    className="absolute inset-0 w-full h-full object-cover z-0 group-hover:scale-105 transition-transform duration-700 ease-out"
+                  />
+                ) : (
+                  <div 
+                    className="absolute inset-0 z-0 opacity-40 group-hover:scale-105 transition-transform duration-700" 
+                    style={{ 
+                      backgroundColor: '#121212',
+                      backgroundImage: swatch.pattern,
+                      backgroundSize: '12px 12px'
+                    }} 
+                  />
+                )}
+
+                {/* Weave texture pattern overlay for depth */}
+                <div className="absolute inset-0 fabric-weave-pattern opacity-10 pointer-events-none z-10" />
 
                 {/* Swatch Color Overlay block */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/30 z-1" />
-
-                {/* Swatch Image Comment Area for physical swatches */}
-                {/* 
-                  IMAGE: High-resolution close up macro photography of {swatch.name} fabric weave.
-                  To drop real image:
-                  <img 
-                    src={`/swatches/${swatch.id}.jpg`} 
-                    alt={swatch.name} 
-                    className="absolute inset-0 w-full h-full object-cover z-0 group-hover:scale-105 transition-transform duration-700"
-                  />
-                */}
-                <div className="absolute inset-0 flex items-center justify-center opacity-10 group-hover:opacity-30 transition-opacity">
-                  <span className="font-mono text-[9px] text-white tracking-[0.2em] uppercase">
-                    [ Macro Swatch Photo ]
-                  </span>
-                </div>
+                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-black/30 z-10 pointer-events-none" />
 
                 {/* Top Label */}
-                <div className="relative z-10 flex justify-between items-center">
-                  <span className="font-mono text-[9px] text-white/50 tracking-widest">
+                <div className="relative z-20 flex justify-between items-center">
+                  <span className="font-mono text-[9px] text-white/70 tracking-widest uppercase bg-black/50 px-2 py-0.5 border border-white/5 backdrop-blur-[1px]">
                     {swatch.type}
                   </span>
-                  <div className="w-2 h-2 rounded-full" style={{ backgroundColor: swatch.accentColor }} />
+                  <div className="w-2.5 h-2.5 rounded-full border border-white/10" style={{ backgroundColor: swatch.accentColor }} />
                 </div>
 
                 {/* Bottom Weight Tag */}
-                <div className="relative z-10 flex justify-between items-end">
-                  <span className="font-sans text-[10px] text-gold tracking-widest uppercase font-semibold">
+                <div className="relative z-20 flex justify-between items-end">
+                  <span className="font-sans text-[10px] text-gold tracking-widest uppercase font-semibold bg-black/50 px-2 py-0.5 border border-white/5 backdrop-blur-[1px]">
                     {swatch.weight}
                   </span>
-                  <Layers className="w-4 h-4 text-white/30" />
+                  <Layers className="w-4 h-4 text-white/55 drop-shadow-md" />
                 </div>
 
               </div>

@@ -2,6 +2,12 @@ import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ArrowRight, Eye, Sparkles, X } from 'lucide-react'
 
+// Import trouser images
+import executiveSlimImg from '../assets/executive-slim.png'
+import heritageClassicImg from '../assets/heritage-classic.png'
+import ceremonialGoldImg from '../assets/ceremonial-gold.png'
+import kineticFlexImg from '../assets/kinetic-flex.png'
+
 export default function Products() {
   const [activeModal, setActiveModal] = useState(null)
 
@@ -9,6 +15,7 @@ export default function Products() {
     {
       id: 'executive-slim',
       name: 'The Executive Slim',
+      image: executiveSlimImg,
       tagline: 'Sleek Modern Profile',
       desc: 'Engineered with a streamlined modern silhouette that tapers cleanly at the ankle. Features our signature flexi-waistband and low-rise structure, perfect for the modern workspace leader.',
       fabric: '70% Polyester, 30% Viscose Premium Blend',
@@ -19,6 +26,7 @@ export default function Products() {
     {
       id: 'heritage-classic',
       name: 'The Heritage Classic',
+      image: heritageClassicImg,
       tagline: 'Timeless Premium Comfort',
       desc: 'A tribute to classical bespoke tailoring. With a standard mid-rise and straight leg drape, this fit provides maximum breathing space while maintaining an ultra-sharp, authoritative profile.',
       fabric: '65% Viscose, 35% Polyester High-Density Gabardine',
@@ -29,6 +37,7 @@ export default function Products() {
     {
       id: 'ceremonial-gold',
       name: 'The Ceremonial Line',
+      image: ceremonialGoldImg,
       tagline: 'Elite Royal Celebration',
       desc: 'Crafted for weddings, evening banquets, and high-profile social galas. Imbued with a subtle luxurious sheen that responds majestically under warm celebration lights.',
       fabric: '80% Polyester, 20% Wool-viscose Rich Sheen Weave',
@@ -39,6 +48,7 @@ export default function Products() {
     {
       id: 'kinetic-flex',
       name: 'The Kinetic Stretch',
+      image: kineticFlexImg,
       tagline: 'High-Performance Comfort',
       desc: 'Formals redefined for the high-octane modern entrepreneur. Uses ultra-resilient spandex integrated fibers to allow full 360-degree range of motion without losing its structured shape.',
       fabric: '62% Polyester, 33% Viscose, 5% Spandex Advanced Flex Weave',
@@ -90,36 +100,34 @@ export default function Products() {
               className="bg-[#1a1a1a] border border-[#333] rounded-[8px] p-6 flex flex-col justify-between group transition-all duration-300 relative cursor-pointer"
             >
               
-              {/* Image Area Placeholder */}
+              {/* Image Area */}
               <div className="relative aspect-[3/4] bg-dark-950 border border-white/5 mb-6 overflow-hidden flex items-center justify-center">
                 
                 {/* Visual grid backdrop to mimic premium empty slot */}
                 <div className="absolute inset-0 fabric-grid-overlay opacity-30" />
                 
                 {/* Subtle dark pattern gradient */}
-                <div className="absolute inset-0 bg-gradient-to-t from-dark-900/80 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-dark-900/80 to-transparent z-10" />
 
-                {/* IMAGE PLACEHOLDER COMMENT - User can place a specific category fit model photo here */}
-                {/* 
-                  IMAGE: Photo of a model displaying {cat.name}.
-                  To drop real image:
+                {cat.image ? (
                   <img 
-                    src={`/images/${cat.id}.jpg`} 
+                    src={cat.image} 
                     alt={cat.name} 
                     className="absolute inset-0 w-full h-full object-cover z-0 group-hover:scale-105 transition-transform duration-700 ease-out"
                   />
-                */}
-                <div className="relative z-10 flex flex-col items-center gap-3 opacity-25 group-hover:opacity-60 transition-opacity duration-300">
-                  <span className="font-mono text-[10px] text-white tracking-widest uppercase">
-                    [ {cat.name} IMAGE ]
-                  </span>
-                  <span className="text-[9px] font-sans text-gray-400 italic">
-                    Aspect Ratio 3:4
-                  </span>
-                </div>
+                ) : (
+                  <div className="relative z-10 flex flex-col items-center gap-3 opacity-25 group-hover:opacity-60 transition-opacity duration-300">
+                    <span className="font-mono text-[10px] text-white tracking-widest uppercase">
+                      [ {cat.name} IMAGE ]
+                    </span>
+                    <span className="text-[9px] font-sans text-gray-400 italic">
+                      Aspect Ratio 3:4
+                    </span>
+                  </div>
+                )}
 
                 {/* Subtle top tag */}
-                <div className="absolute top-3 left-3 px-2 py-0.5 bg-dark-900 border border-white/10">
+                <div className="absolute top-3 left-3 px-2 py-0.5 bg-dark-900 border border-white/10 z-20">
                   <span className="font-mono text-[9px] text-gold tracking-widest uppercase">
                     FIT 0{idx + 1}
                   </span>
@@ -201,21 +209,39 @@ export default function Products() {
                   <X className="w-5 h-5" />
                 </button>
 
-                {/* Modal Title */}
-                <div className="mb-6 flex items-center gap-2">
-                  <Sparkles className="w-4 h-4 text-gold" />
-                  <span className="font-sans text-xs uppercase tracking-[0.25em] text-gold font-semibold">
-                    {activeModal.tagline}
-                  </span>
+                {/* Premium Grid Layout inside Modal */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+                  {/* Left Column: Product Image Preview */}
+                  {activeModal.image && (
+                    <div className="md:col-span-1 relative aspect-[3/4] bg-dark-950 border border-white/10 overflow-hidden rounded-[4px] shadow-2xl">
+                      <img 
+                        src={activeModal.image} 
+                        alt={activeModal.name} 
+                        className="absolute inset-0 w-full h-full object-cover"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-dark-950/50 via-transparent to-transparent" />
+                    </div>
+                  )}
+
+                  {/* Right Column: Title, Tagline, Description */}
+                  <div className={`${activeModal.image ? 'md:col-span-2' : 'md:col-span-3'} flex flex-col justify-center`}>
+                    {/* Modal Title */}
+                    <div className="mb-4 flex items-center gap-2">
+                      <Sparkles className="w-4 h-4 text-gold" />
+                      <span className="font-sans text-xs uppercase tracking-[0.25em] text-gold font-semibold">
+                        {activeModal.tagline}
+                      </span>
+                    </div>
+
+                    <h3 className="font-serif text-3xl md:text-4xl text-white font-medium mb-4">
+                      {activeModal.name}
+                    </h3>
+
+                    <p className="font-sans text-sm md:text-base text-gray-300 font-light leading-relaxed">
+                      {activeModal.desc}
+                    </p>
+                  </div>
                 </div>
-
-                <h3 className="font-serif text-3xl md:text-4xl text-white font-medium mb-4">
-                  {activeModal.name}
-                </h3>
-
-                <p className="font-sans text-sm md:text-base text-gray-300 font-light leading-relaxed mb-8">
-                  {activeModal.desc}
-                </p>
 
                 {/* Specs Split Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8 border-t border-b border-white/5 py-8">

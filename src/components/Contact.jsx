@@ -91,7 +91,7 @@ export default function Contact() {
                   <span className="block font-mono text-[9px] text-gray-500 uppercase tracking-widest mb-1">
                     WhatsApp & Hotline
                   </span>
-                  <a href="https://wa.me/919876543210" target="_blank" rel="noreferrer" className="block font-sans text-sm text-white hover:text-gold transition-colors font-medium">
+                  <a href="https://wa.me/+919820013539" target="_blank" rel="noreferrer" className="block font-sans text-sm text-white hover:text-gold transition-colors font-medium">
                     +91 98765 43210
                   </a>
                   <span className="block font-sans text-[11px] text-gray-500 font-light mt-0.5">
